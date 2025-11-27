@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Accès immeuble Le Siamois</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      min-height: 100vh;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card {
+      background: #020617;
+      border-radius: 18px;
+      padding: 24px 22px 20px;
+      max-width: 420px;
+      width: 100%;
+      box-shadow:
+        0 18px 45px rgba(15, 23, 42, 0.85),
+        0 0 0 1px rgba(148, 163, 184, 0.18);
+    }
+
+    h1 {
+      font-size: 1.4rem;
+      margin: 0 0 4px;
+      color: #e5e7eb;
+    }
+
+    .subtitle {
+      font-size: 0.9rem;
+      color: #94a3b8;
+      margin-bottom: 18px;
+    }
+
+    .code-box {
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .code-label {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #64748b;
+      margin-bottom: 4px;
+    }
+
+    .code-value {
+      font-family: "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 1rem;
+      color: #e5e7eb;
+    }
+
+    .warning {
+      font-size: 0.78rem;
+      color: #f97316;
+      margin-top: 4px;
+    }
+
+    button {
+      width: 100%;
+      border: none;
+      border-radius: 999px;
+      padding: 12px 16px;
+      font-size: 0.98rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 4px;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: #022c22;
+      box-shadow:
+        0 10px 25px rgba(22, 163, 74, 0.5),
+        0 0 0 1px rgba(34, 197, 94, 0.4);
+    }
+
+    button:active {
+      transform: translateY(1px);
+      box-shadow:
+        0 4px 14px rgba(22, 163, 74, 0.6),
+        0 0 0 1px rgba(34, 197, 94, 0.6);
+    }
+
+    .footer {
+      margin-top: 12px;
+      font-size: 0.78rem;
+      color: #64748b;
+      line-height: 1.5;
+    }
+
+    .error {
+      color: #f97373;
+      margin-top: 8px;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Accès immeuble Le Siamois</h1>
+    <div class="subtitle">
+      Ce bouton prépare le SMS à envoyer pour activer l'ouverture de l'immeuble.
+    </div>
+
+    <div id="infoBox" class="code-box">
+      <div class="code-label">Code SMS à envoyer</div>
+      <div id="codeValue" class="code-value">–</div>
+      <div class="warning">
+        Vérifiez que ce texte correspond bien au message indiqué par Airbnb.
+      </div>
+    </div>
+
+    <button id="sendBtn" type="button">
+      📩 Préparer le SMS d'accès
+    </button>
+
+    <div id="errorBox" class="error" style="display:none;"></div>
+
+    <div class="footer">
+      • Cette page ne collecte aucune donnée.<br />
+      • Si rien ne se passe en cliquant, envoyez le SMS manuellement avec le texte affiché ci-dessus.
+    </div>
+  </div>
+
+  <script>
+    function getQueryParam(name) {
+      const params = new URLSearchParams(window.location.search);
+      return params.get(name);
+    }
+
+    const code = getQueryParam("code");
+    const phone = getQueryParam("phone");
+
+    const codeEl = document.getElementById("codeValue");
+    const errorEl = document.getElementById("errorBox");
+    const btn = document.getElementById("sendBtn");
+
+    if (!code || !phone) {
+      codeEl.textContent = "Paramètres manquants : code ou téléphone.";
+      btn.disabled = true;
+      btn.style.opacity = "0.5";
+      errorEl.style.display = "block";
+      errorEl.textContent = "URL incomplète. Demandez à l'hôte de vérifier le lien fourni.";
+    } else {
+      codeEl.textContent = code;
+
+      btn.addEventListener("click", function () {
+        const cleanedPhone = phone.replace(/[^0-9+]/g, "");
+        const body = encodeURIComponent(code);
+
+        // Schéma SMS générique (iOS / Android)
+        const smsUrl = "sms:" + cleanedPhone + "?&body=" + body;
+
+        window.location.href = smsUrl;
+      });
+    }
+  </script>
+</body>
+</html>
