@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Accès immeuble - Le Siamois</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+      display: flex;
+      min-height: 100vh;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .card {
+      background: #020617;
+      border-radius: 16px;
+      padding: 20px 22px;
+      max-width: 480px;
+      width: 100%;
+      box-shadow: 0 18px 45px rgba(0,0,0,0.6);
+      border: 1px solid rgba(148,163,184,0.4);
+    }
+    h1 {
+      font-size: 1.4rem;
+      margin: 0 0 8px;
+    }
+    h2 {
+      font-size: 1.1rem;
+      margin: 20px 0 6px;
+    }
+    p {
+      margin: 6px 0;
+      line-height: 1.4;
+      font-size: 0.95rem;
+    }
+    .steps {
+      font-size: 0.95rem;
+    }
+    .btn {
+      display: block;
+      margin: 18px 0 10px;
+      text-align: center;
+      text-decoration: none;
+      background: #22c55e;
+      color: #020617;
+      padding: 12px 16px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 1rem;
+      box-shadow: 0 12px 25px rgba(34,197,94,0.4);
+    }
+    .btn:active {
+      transform: translateY(1px);
+      box-shadow: 0 8px 18px rgba(34,197,94,0.35);
+    }
+    code {
+      background: rgba(15,23,42,0.9);
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-size: 0.85rem;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid rgba(148,163,184,0.35);
+      margin: 14px 0;
+    }
+    .small {
+      font-size: 0.85rem;
+      opacity: 0.85;
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>Accès à l'immeuble – Le Siamois</h1>
+    <p class="steps">
+      1️⃣ Appuyez sur le bouton ci-dessous.<br>
+      2️⃣ Votre application SMS s’ouvre avec le message pré-rempli.<br>
+      3️⃣ Envoyez le SMS, puis suivez le message Airbnb.
+    </p>
+
+    <!-- Bouton FR (href mis à jour par JS) -->
+    <a id="btn-fr" class="btn" href="#">
+      Envoyer le SMS d’accès
+    </a>
+
+    <p class="small">
+      Si le texte n’est pas rempli automatiquement, écrivez manuellement&nbsp;:
+      <br>
+      <code class="code-value">CODE</code>
+      à envoyer au <strong>+33&nbsp;6&nbsp;95&nbsp;87&nbsp;94&nbsp;92</strong>.
+    </p>
+
+    <hr>
+
+    <h2>English</h2>
+    <p class="steps">
+      1️⃣ Tap the button below.<br>
+      2️⃣ Your SMS app opens with a pre-filled message.<br>
+      3️⃣ Send the SMS, then follow the Airbnb message.
+    </p>
+
+    <!-- Bouton EN (href mis à jour par JS) -->
+    <a id="btn-en" class="btn" href="#">
+      Send access SMS
+    </a>
+
+    <p class="small">
+      If the text is not pre-filled, type:<br>
+      <code class="code-value">CODE</code>
+      and send it to <strong>+33&nbsp;6&nbsp;95&nbsp;87&nbsp;94&nbsp;92</strong>.
+    </p>
+  </main>
+
+  <script>
+    // ⚙️ Paramètres de base
+    const DEFAULT_CODE = "SIAMOIS37";      // code par défaut si pas de ?code=
+    const PHONE_E164   = "+33695879492";   // numéro du module
+
+    // 🔍 Récupère le code dans l'URL : ?code=XXXX
+    const params = new URLSearchParams(window.location.search);
+    let code = params.get("code");
+    if (!code) {
+      code = DEFAULT_CODE;
+    }
+    code = code.trim();
+
+    // 📨 Met à jour les liens SMS
+    const smsHref = "sms:" + PHONE_E164 + "?body=" + encodeURIComponent(code);
+    const btnFr = document.getElementById("btn-fr");
+    const btnEn = document.getElementById("btn-en");
+    if (btnFr) btnFr.href = smsHref;
+    if (btnEn) btnEn.href = smsHref;
+
+    // 📝 Affiche le code en clair dans les <code>
+    document.querySelectorAll(".code-value").forEach(el => {
+      el.textContent = code;
+    });
+  </script>
+</body>
+</html>
