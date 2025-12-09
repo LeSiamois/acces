@@ -140,8 +140,8 @@
       return params.get(name);
     }
 
-    const code = getQueryParam("code");
-    const phone = getQueryParam("phone");
+    let code = getQueryParam("code");
+    let phone = getQueryParam("phone");
 
     const codeEl = document.getElementById("codeValue");
     const errorEl = document.getElementById("errorBox");
@@ -154,14 +154,25 @@
       errorEl.style.display = "block";
       errorEl.textContent = "URL incomplète. Demandez à l'hôte de vérifier le lien fourni.";
     } else {
+
+      // Décodage %2B → +
+      phone = decodeURIComponent(phone);
+
+      // Nettoyage des caractères parasites
+      phone = phone.replace(/[^0-9+]/g, "");
+
+      // Si le + a disparu ou n’est pas en tête → on le remet
+      if (!phone.startsWith("+")) {
+        phone = "+" + phone;
+      }
+
       codeEl.textContent = code;
 
       btn.addEventListener("click", function () {
-        const cleanedPhone = phone.replace(/[^0-9+]/g, "");
         const body = encodeURIComponent(code);
 
-        // Schéma SMS générique (iOS / Android)
-        const smsUrl = "sms:" + cleanedPhone + "?&body=" + body;
+        // Schéma SMS (iOS + Android)
+        const smsUrl = "sms:" + phone + "?&body=" + body;
 
         window.location.href = smsUrl;
       });
